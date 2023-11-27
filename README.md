@@ -1,5 +1,5 @@
 # 355Project
-355 Big Group Programming Project
+## 355 Big Group Programming Project
 Language: c++
 Profile: Yana
 Payment_method: Phoenix
