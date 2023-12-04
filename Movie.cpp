@@ -120,14 +120,15 @@ int main()
         
         string columnName;
         columnName = "YearReleased";
-        cout << "Enter an integer that is the new value for YearReleased";
+        cout << "Enter an integer that is the new value for YearReleased ";
         int updatedVal, userMovieName;
         cin >> updatedVal;
-        //cin >> userMovieName;
+        cout << "Enter the id number of the Movie you would like to update "
+        cin >> userMovieName;
 
-        prep_stmt = con->prepareStatement("UPDATE Movie SET " + columnName + " = ? WHERE id = 1");
+        prep_stmt = con->prepareStatement("UPDATE Movie SET " + columnName + " = ? WHERE id = ?");
         prep_stmt->setInt(1,updatedVal);
-        //prep_stmt->setInt(2,userMovieName);
+        prep_stmt->setInt(2,userMovieName);
         prep_stmt->execute();
 
         delete prep_stmt; 
