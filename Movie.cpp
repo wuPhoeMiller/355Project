@@ -15,21 +15,12 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
-/* cout << "Please enter the name of the movie";
-    string movieName = "";
-    cin >> movieName;
-
-    cout << "You entered the movie " << movieName << endl; */
 
 using namespace std;
 
 int main()
 {
     cout << endl;
-    //cout << "Running 'SELECT 'Hello World!' »
-    //AS _message'..." << endl;
-
-
 
     try {
 
@@ -56,17 +47,110 @@ int main()
         cout << res->getString(1) << endl;
     }
 
-    string movie;
-    cout << "Put 'Barney'" << endl;
-    cin >> movie;
+    string actionType;
+    cout << "input what action to perform: (C for Create, R for Read, U for Update, or D for delete) " << endl;
+    cin >> actionType;
 
-    prep_stmt = con->prepareStatement("INSERT INTO Movie (Name,YearReleased,Runtime,Description) VALUES (?, ?, ?, ?)");
-    prep_stmt->setString(1,"Elmo");
-    prep_stmt->setInt(2,1996);
-    prep_stmt->setInt(3,1);
-    prep_stmt->setString(4,"Elmo scares me sometimes");
-    prep_stmt->execute();
-    res = stmt->executeQuery("SELECT Name AS _column FROM Movie");
+    if (actionType == "C" || actionType == "c" ) {
+
+        string movieName, description;
+        int yearReleased, runtime;
+        cout << "Enter The Movie Name " << endl;
+        cin.ignore();
+        getline(cin, movieName);
+        cout << "You inputed " + movieName << endl;
+        cout << "Enter The Year Released ";
+        cin >> yearReleased;
+        cout << "Enter the runtime of the movie " << endl;  
+        cin >> runtime;
+        cout << "Enter a description " << endl;  
+        cin.ignore();      
+        getline(cin, description);
+    
+        prep_stmt = con->prepareStatement("INSERT INTO Movie (Name,YearReleased,Runtime,Description) VALUES (?, ?, ?, ?)");
+        prep_stmt->setString(1, movieName);
+        prep_stmt->setInt(2,yearReleased);
+        prep_stmt->setInt(3,runtime);
+        prep_stmt->setString(4,description);
+        prep_stmt->execute();
+
+        delete prep_stmt;
+        //res = stmt->executeQuery("SELECT Name AS _column FROM Movie"); 
+    }
+
+    else if (actionType == "R" || actionType == "r") {
+        string columnName;
+        cout << "Enter column name ";
+        cin >> columnName;
+
+        res = stmt->executeQuery("SELECT " + columnName + " AS _column FROM Movie"); 
+    }
+
+    else if (actionType == "U" || actionType == "u") {
+
+
+        //string columnName, updatedVal; 
+        //int userColumnChoice, mid;
+        //cout << "Enter the movie id to update ";
+        //cin >> mid; 
+        //cout << "Enter a column to update ";
+        //cin >> userColumnChoice;
+        //cout << "Enter what to set the value to for the column you entered ";
+        //cin.ignore();
+        //getline(cin, updatedVal);
+        
+        /*
+        switch (userColumnChoice) {
+            case 1:
+                columnName = "Name";
+                break;
+            case 2:
+                columnName = "YearReleased";
+                break;
+            case 3:
+                columnName = "Runtime";
+                break;
+            case 4:
+                columnName = "Description";
+                break; 
+            default: 
+                cout << "You didn't chose a valid column" << endl;   
+                break;        
+        } */
+        
+        string columnName;
+        columnName = "YearReleased";
+        cout << "Enter an integer that is the new value for YearReleased ";
+        int updatedVal, userMovieName;
+        cin >> updatedVal;
+        cout << "Enter the id number of the Movie you would like to update ";
+        cin >> userMovieName;
+
+        prep_stmt = con->prepareStatement("UPDATE Movie SET " + columnName + " = ? WHERE id = ?");
+        prep_stmt->setInt(1,updatedVal);
+        prep_stmt->setInt(2,userMovieName);
+        prep_stmt->execute();
+
+        delete prep_stmt; 
+
+    }
+
+    else if (actionType == "D" || actionType == "d") {
+        //DELETE FROM table_name WHERE condition;
+        int userCondition;
+        cin >> userCondition;
+
+        prep_stmt = con->prepareStatement("DELETE FROM Movie WHERE id=?");
+        prep_stmt->setInt(1,userCondition);
+        prep_stmt->execute();
+
+        delete prep_stmt; 
+
+    }
+
+    else {
+        cout << "Error: you did not enter what action you would like to perform";
+    }
     
     while (res->next()) {
         cout << "\t... MySQL replies: ";
