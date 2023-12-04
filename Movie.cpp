@@ -15,21 +15,12 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
-/* cout << "Please enter the name of the movie";
-    string movieName = "";
-    cin >> movieName;
-
-    cout << "You entered the movie " << movieName << endl; */
 
 using namespace std;
 
 int main()
 {
     cout << endl;
-    //cout << "Running 'SELECT 'Hello World!' »
-    //AS _message'..." << endl;
-
-
 
     try {
 
@@ -56,17 +47,74 @@ int main()
         cout << res->getString(1) << endl;
     }
 
-    string movie;
-    cout << "Put 'Barney'" << endl;
-    cin >> movie;
+    string actionType;
+    cout << "input what action to perform: (C for Create, R for Read, U for Update, or D for delete) " << endl;
+    cin >> actionType;
 
-    prep_stmt = con->prepareStatement("INSERT INTO Movie (Name,YearReleased,Runtime,Description) VALUES (?, ?, ?, ?)");
-    prep_stmt->setString(1,"Elmo");
-    prep_stmt->setInt(2,1996);
-    prep_stmt->setInt(3,1);
-    prep_stmt->setString(4,"Elmo scares me sometimes");
-    prep_stmt->execute();
-    res = stmt->executeQuery("SELECT Name AS _column FROM Movie");
+    if (actionType == "C" || actionType == "c" ) {
+
+        string movieName, description;
+        int yearReleased, runtime;
+        cout << "Enter The Movie Name " << endl;
+        cin.ignore();
+        getline(cin, movieName);
+        cout << "You inputed " + movieName << endl;
+        cout << "Enter The Year Released ";
+        cin >> yearReleased;
+        cout << "Enter the runtime of the movie " << endl;  
+        cin >> runtime;
+        cout << "Enter a description " << endl;  
+        cin.ignore();      
+        getline(cin, description);
+    
+        prep_stmt = con->prepareStatement("INSERT INTO Movie (Name,YearReleased,Runtime,Description) VALUES (?, ?, ?, ?)");
+        prep_stmt->setString(1, movieName);
+        prep_stmt->setInt(2,yearReleased);
+        prep_stmt->setInt(3,runtime);
+        prep_stmt->setString(4,description);
+        prep_stmt->execute();
+
+        delete prep_stmt;
+        //res = stmt->executeQuery("SELECT Name AS _column FROM Movie"); 
+    }
+
+    else if (actionType == "R" || actionType == "r") {
+        string columnName;
+        cout << "Enter column name ";
+        cin >> columnName;
+
+        res = stmt->executeQuery("SELECT " + columnName + " AS _column FROM Movie"); 
+    }
+
+    else if (actionType == "U" || actionType == "u") {
+
+        string columnName, updatedVal; 
+        int mid;
+        cout << "Enter the movie id to update ";
+        cin >> mid; 
+        cout << "Enter a column to update ";
+        cin >> columnName;
+        cout << "Enter what to set the value to for the column you entered ";
+        cin.ignore();
+        getline(cin, updatedVal);
+
+        //res = stmt->executeQuery("UPDATE Movie SET Name='Tangled' WHERE id=1");
+
+        prep_stmt = con->prepareStatement("UPDATE Movie SET " + columnName + " = '?' WHERE id = " + to_string(mid));
+        prep_stmt->setString(1, updatedVal);
+        prep_stmt->execute();
+
+        delete prep_stmt;
+
+    }
+
+    else if (actionType == "D" || actionType == "d") {
+
+    }
+
+    else {
+        cout << "Error: you did not enter what action you would like to perform";
+    }
     
     while (res->next()) {
         cout << "\t... MySQL replies: ";
