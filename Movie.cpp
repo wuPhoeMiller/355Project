@@ -123,7 +123,7 @@ int main()
         cout << "Enter an integer that is the new value for YearReleased ";
         int updatedVal, userMovieName;
         cin >> updatedVal;
-        cout << "Enter the id number of the Movie you would like to update "
+        cout << "Enter the id number of the Movie you would like to update ";
         cin >> userMovieName;
 
         prep_stmt = con->prepareStatement("UPDATE Movie SET " + columnName + " = ? WHERE id = ?");
