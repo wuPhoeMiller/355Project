@@ -88,27 +88,62 @@ int main()
 
     else if (actionType == "U" || actionType == "u") {
 
-        string columnName, updatedVal; 
-        int mid;
-        cout << "Enter the movie id to update ";
-        cin >> mid; 
-        cout << "Enter a column to update ";
-        cin >> columnName;
-        cout << "Enter what to set the value to for the column you entered ";
-        cin.ignore();
-        getline(cin, updatedVal);
 
-        //res = stmt->executeQuery("UPDATE Movie SET Name='Tangled' WHERE id=1");
+        //string columnName, updatedVal; 
+        //int userColumnChoice, mid;
+        //cout << "Enter the movie id to update ";
+        //cin >> mid; 
+        //cout << "Enter a column to update ";
+        //cin >> userColumnChoice;
+        //cout << "Enter what to set the value to for the column you entered ";
+        //cin.ignore();
+        //getline(cin, updatedVal);
+        
+        /*
+        switch (userColumnChoice) {
+            case 1:
+                columnName = "Name";
+                break;
+            case 2:
+                columnName = "YearReleased";
+                break;
+            case 3:
+                columnName = "Runtime";
+                break;
+            case 4:
+                columnName = "Description";
+                break; 
+            default: 
+                cout << "You didn't chose a valid column" << endl;   
+                break;        
+        } */
+        
+        string columnName;
+        columnName = "YearReleased";
+        cout << "Enter an integer that is the new value for YearReleased";
+        int updatedVal, userMovieName;
+        cin >> updatedVal;
+        //cin >> userMovieName;
 
-        prep_stmt = con->prepareStatement("UPDATE Movie SET " + columnName + " = '?' WHERE id = " + to_string(mid));
-        prep_stmt->setString(1, updatedVal);
+        prep_stmt = con->prepareStatement("UPDATE Movie SET " + columnName + " = ? WHERE id = 1");
+        prep_stmt->setInt(1,updatedVal);
+        //prep_stmt->setInt(2,userMovieName);
         prep_stmt->execute();
 
-        delete prep_stmt;
+        delete prep_stmt; 
 
     }
 
     else if (actionType == "D" || actionType == "d") {
+        //DELETE FROM table_name WHERE condition;
+        int userCondition;
+        cin >> userCondition;
+
+        prep_stmt = con->prepareStatement("DELETE FROM Movie WHERE id=?");
+        prep_stmt->setInt(1,userCondition);
+        prep_stmt->execute();
+
+        delete prep_stmt; 
 
     }
 
